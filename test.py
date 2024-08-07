@@ -1,37 +1,35 @@
 from PrepareData import PrepareData
+from torch.utils.data import TensorDataset, DataLoader
+from sklearn.model_selection import train_test_split
 import numpy as np
 import torch
+import pickle
+
+import Models.test as CNN
 import params
 
-args = params.parse_args()
+def Data_Load():
+     X = np.load('Dataset/data_samples.npy') # (samples' nember, 1024)
+     Y = np.load('Dataset/data_labels.npy')  # (samples' number, 1)
+     X, Y = torch.Tensor(X), torch.LongTensor(Y)
+     X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2, random_state=42)
 
-label_set = args.label_set
-paths = ['datasets/CWRU/Drive_end_0/',
-         'datasets/CWRU/Drive_end_1/',
-         'datasets/CWRU/Drive_end_2/',
-         'datasets/CWRU/Drive_end_3/']
+     train_set = TensorDataset(X_train, Y_train)
+     test_set = TensorDataset(X_test, Y_test)
 
-dataname_dict = {0: [97, 109, 122, 135, 173, 189, 201, 213, 226, 238],  # 1797rpm
-                 1: [98, 110, 123, 136, 175, 190, 202, 214, 227, 239],  # 1772rpm
-                 2: [99, 111, 124, 137, 176, 191, 203, 215, 228, 240],  # 1750rpm
-                 3: [100, 112, 125, 138, 177, 192, 204, 217, 229, 241]}
-path = paths[args.load]
-data_name = dataname_dict[args.load]
-loca = '_DE_time'
+     train_batch = DataLoader(train_set, batch_size=32, shuffle=True)
+     test_batch = DataLoader(test_set, batch_size=32, shuffle=True)
+     pickle.dump(train_batch, open('Dataset/train_batch.dill', 'wb'))
+     pickle.dump(test_batch, open('Dataset/test_batch.dill', 'wb'))
 
-samples = np.empty((0, 1024))
-labels = np.empty((0, 1))
-for i, filename in enumerate(dataname_dict[args.load]):
-    path = paths[args.load] + str(filename) + '.mat'
-    label = label_set[i]
-    sub_sample, sub_label = PrepareData.Data_read(path, loca, label)
-    samples = np.append(samples, sub_sample, axis=0)
-    labels = np.append(labels, sub_label, axis=0)
+     return train_batch, test_batch
 
-np.savetxt('Dataset/data_samples.csv', samples, delimiter=',')
-np.savetxt('Dataset/data_labels.csv', labels, delimiter=',')
-
-
-
-
-
+if __name__ == '__main__':
+     train_batch, test_batch = Data_Load()
+     # train_batch = pickle.load(open('Dataset/train_batch.dill', 'rb'))
+     # test_batch = pickle.load(open('Dataset/test_batch.dill', 'rb'))
+     model = CNN.CNN1D()
+     for step, (sample, label) in enumerate(train_batch):
+          feature = model(sample)
+          print(feature.shape)
+          break
