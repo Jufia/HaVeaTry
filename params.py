@@ -17,6 +17,7 @@ def parse_args():
     # parser.add_argument("--seed", type=int, default="29")
 
     # pre-prosessing
+    parser.add_argument("--length", type=int, default=1024, help="length of sequence")
     parser.add_argument("--fft", type=bool, default=False, help="FFT preprocessing")
     parser.add_argument("--window", type=int, default=128, help="time window, if not augment data, window=1024")
     parser.add_argument("--normalization", type=str, default="0-1", choices=["None", "0-1", "mean-std"], help="normalization option")
