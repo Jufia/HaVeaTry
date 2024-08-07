@@ -1,8 +1,7 @@
-import torch
-import pandas
 import numpy as np
 from scipy.io import loadmat
 import params
+import os
 
 args = params.parse_args()
 
@@ -57,8 +56,9 @@ def Data_Merge_Save(loca = '_DE_time'):
         samples = np.append(samples, sub_sample, axis=0)
         labels = np.append(labels, sub_label, axis=0)
 
-    np.save('Dataset/data_samples.npy', samples)
-    np.save('Dataset/data_labels.npy', labels)
+    # os.makedirs("../Dataset/")
+    np.save('../Dataset/data_samples.npy', samples)
+    np.save('../Dataset/data_labels.npy', labels)
     # np.savetxt('../Dataset/data_samples.csv', samples, delimiter=',')
     # np.savetxt('../Dataset/data_labels.csv', labels, delimiter=',')
 
