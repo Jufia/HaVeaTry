@@ -1,9 +1,7 @@
 import numpy as np
 from scipy.io import loadmat
-import params
+from params import args
 import os
-
-args = params.parse_args()
 
 def Normalize(sub_data, normalization):
     if normalization == "0-1":
