@@ -26,9 +26,9 @@ parser.add_argument("--normalization", type=str, default="0-1", choices=["None",
 parser.add_argument("--backbone", type=str, default="ResNet1D", choices=["ResNet1D", "ResNet2D", "MLPNet", "CNN1D"])
 
 # optimization & training
-parser.add_argument("--batch_size", type=int, default=32, help="batch size")
+parser.add_argument("--batch_size", type=int, default=64, help="batch size")
 parser.add_argument("--max_epoch", type=int, default=10)
-parser.add_argument("--lr", type=float, default=1e-3, help="learning rate")
+parser.add_argument("--lr", type=float, default=0.003, help="learning rate")
 
 args = parser.parse_args()
 
